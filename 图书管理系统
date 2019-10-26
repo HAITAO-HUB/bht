@@ -1,0 +1,189 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct Node{
+	char name[20];
+	char ISBN[20];
+	char price[10];
+}Node;
+typedef struct Book{
+	Node date;
+	struct Book*next;
+}book;
+book*GreatLink()
+{
+	book*h, *tail, *p;
+	h=tail=(book*)malloc(sizeof(book));
+	h->next = NULL;
+	int n = 0;
+	printf("输入要录入书的数目：");
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
+	{
+		p = (book*)malloc(sizeof(book));
+		printf("书名：");
+		scanf("%s",&p->date.name);
+		printf("IBSN:");
+		scanf("%s",&p->date.ISBN);
+		printf("价格：");
+		scanf("%s",&p->date.price);
+		p->next = NULL;
+		tail->next = p; 
+		tail = p;
+	}
+
+	return h;
+}
+void Insert(book*h)//插入(头插法)
+{
+	book*p;
+		p = (book*)malloc(sizeof(book));
+		printf("书名：");
+		scanf("%s", &p->date.name);
+		printf("IBSN:");
+		scanf("%s", &p->date.ISBN);
+		printf("价格：");
+		scanf("%s", &p->date.price);
+		p->next = h->next;
+		h->next = p;
+	
+}
+void Search1(book*h)//书名查找
+{
+	char name[20];
+	book*p = h->next;
+	printf("输入要查找的书名：");
+	scanf("%s",&name);
+	while (p!=NULL)
+	{
+		if (strcmp(p->date.name,name)!=0)
+		{
+			p = p->next;
+		}
+		else 
+		{
+			printf("书名\tISBN\t价格\n");
+			printf("%s\t%s\t%s\n",p->date.name,p->date.ISBN,p->date.price);
+			return;
+		}
+	}
+	if (p == NULL)
+	{
+		printf("没有查询到！\n");
+	}
+}
+void Search2(book*h)//ISBN查找
+{
+	char ISBN[20];
+	book*p = h->next;
+	printf("输入要查找的ISBN：");
+	scanf("%s", &ISBN);
+	while (p != NULL)
+	{
+		if (strcmp(p->date.ISBN, ISBN)!=0)
+		{
+			p = p->next;
+		}
+		else
+		{
+			printf("书名\tISBN\t价格\n");
+			printf("%s\t%s\t%s\n", p->date.name, p->date.ISBN, p->date.price);
+			return;
+		}
+	}
+	if (p == NULL)
+	{
+		printf("没有查询到！\n");
+	}
+}
+void PrintLink(book*h)//输出
+{
+	book*p;
+	printf("书名\tISBN\t价格\n");
+	for (p = h->next; p != NULL; p = p->next)
+	{
+		printf("%s\t",p->date.name);
+		printf("%s\t", p->date.ISBN);
+		printf("%s\t", p->date.price);
+		printf("\n");
+	}
+
+}
+void delete(book*h)
+{
+	char ISBN[20];//按ISBN删除，因为ISBN是唯一的
+	book*p = h->next;
+	book*tail = h;
+	printf("输入要删除书的ISBN：");
+	scanf("%s", &ISBN);
+	while (p != NULL)
+	{
+		if (strcmp(p->date.ISBN, ISBN)!=0)
+		{
+			p = p->next;
+			tail = tail->next;
+		}
+		else
+		{
+			tail->next = p->next;
+			free(p);
+			return;
+		}
+	}
+}
+void menu()
+{
+	printf("---------图书管理系统---------\n");
+	printf("************1.录入************\n");
+	printf("************2.插入************\n");
+	printf("************3.按书名查询******\n");
+	printf("***********4.按ISBN查询*******\n");
+	printf("************5.删除************\n");
+	printf("************6.输出************\n");
+	printf("注：只录入一次，否则会覆盖\n");
+}
+void choose(book*h)
+{
+	int i;
+	int a = 1;
+
+	while (a>0)
+	{
+		menu();
+		printf("请选择：");
+		scanf("%d",&i);
+		switch (i)
+		{
+		case 1:
+			h=GreatLink();
+			break;
+		case 2:
+			Insert(h);
+			break;
+		case 3:
+			Search1(h);
+			break;
+		case 4:
+				Search2(h);
+				break;
+		case 5:
+				delete(h);
+				break;
+		case 6:
+				PrintLink(h);
+				break;
+		default:
+			printf("无效的命令！\n");
+				a = -1;//跳出循环条件 
+				break;
+			}
+		}
+}
+
+int main()
+{
+	book*head = NULL;
+	choose(head);
+	return 0;
+}
